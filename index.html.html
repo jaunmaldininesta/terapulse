@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeraPulse | Full-Quality Terabox Direct Link Extractor</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        obsidian: {
+                            950: '#090D16',
+                            900: '#101624',
+                            850: '#161F33',
+                            800: '#1E293B',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar & Glassmorphism */
+        ::-webkit-scrollbar {
+            width: 7px;
+            height: 7px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090D16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E293B;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+        .glass-panel {
+            background: rgba(16, 22, 36, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(51, 65, 85, 0.55);
+        }
+        .hero-glow {
+            box-shadow: 0 0 60px -15px rgba(6, 182, 212, 0.25);
+        }
+    </style>
+</head>
+<body class="bg-obsidian-950 text-slate-200 font-sans min-h-screen flex flex-col selection:bg-cyan-500/30 selection:text-cyan-200">
+
+    <!-- Ambient Background Gradients -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="absolute -top-44 left-1/4 w-[30rem] h-[30rem] bg-cyan-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute top-1/2 -right-36 w-[28rem] h-[28rem] bg-indigo-600/10 rounded-full blur-3xl"></div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none max-w-sm"></div>
+
+    <!-- Sticky Header -->
+    <header class="relative z-20 border-b border-slate-800/80 bg-obsidian-950/85 backdrop-blur-md sticky top-0">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+            <!-- Brand Identity -->
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-400 via-sky-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                    <i data-lucide="zap" class="w-5 h-5 text-slate-950 stroke-[2.5]"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-extrabold text-lg tracking-tight text-white">Tera<span class="text-cyan-400">Pulse</span></span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">GitHub Pages</span>
+                    </div>
+                    <p class="hidden sm:block text-[11px] text-slate-400 -mt-0.5">Static Client-Side Full-Quality Terabox Extractor</p>
+                </div>
+            </div>
+
+            <!-- Right Header Actions -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Active Mode Indicator Pill -->
+                <div id="headerModeBadge" class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-obsidian-900 border border-slate-800 text-xs font-medium text-amber-300">
+                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                    <span id="headerModeText">Mode C: Demo Preview</span>
+                </div>
+
+                <!-- Deploy to GitHub Pages Modal Button -->
+                <button type="button" onclick="toggleModal('githubModal', true)" class="flex items-center gap-1.5 text-xs font-semibold bg-slate-800/90 hover:bg-slate-800 text-white border border-slate-700 px-3.5 py-2 rounded-xl transition active:scale-95">
+                    <i data-lucide="github" class="w-4 h-4 text-cyan-400"></i>
+                    <span>Deploy to GitHub Pages</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="relative z-10 flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 py-7 sm:py-10">
+
+        <!-- Hero Heading -->
+        <div class="text-center mb-7 sm:mb-9">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-300 text-xs font-medium mb-3.5">
+                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <span>100% Static Single-File &bull; Zero Server Required &bull; Untouched Original Quality</span>
+            </div>
+            <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-2.5">
+                Terabox <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400">Full-Quality</span> Link Extractor
+            </h1>
+            <p class="text-slate-400 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
+                Bypass browser player compression and speed limits. Extract raw original <code class="text-cyan-300 bg-obsidian-900 px-1.5 py-0.5 rounded border border-slate-800">dlink</code> CDN URLs for multi-threaded downloading in <strong class="text-slate-200">1DM</strong>, <strong class="text-slate-200">IDM</strong>, or <strong class="text-slate-200">aria2c</strong>.
+            </p>
+        </div>
+
+        <!-- Primary Extractor Card -->
+        <div class="glass-panel rounded-2xl p-5 sm:p-7 hero-glow mb-6">
+
+            <!-- Share Link Input Form -->
+            <form id="extractForm" class="space-y-4">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-3">
+                    <!-- Share URL Input -->
+                    <div class="lg:col-span-8">
+                        <label for="teraboxUrl" class="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                            Terabox Share Link (Single File or Shared Folder)
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                                <i data-lucide="link" class="w-4 h-4"></i>
+                            </div>
+                            <input 
+                                type="url" 
+                                id="teraboxUrl" 
+                                placeholder="https://www.terabox.com/s/1xK9mP2vL8nQ4rT7wY" 
+                                value="https://www.terabox.com/s/1xK9mP2vL8nQ4rT7wY"
+                                required
+                                class="w-full bg-obsidian-950 border border-slate-700/90 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 rounded-xl pl-10 pr-24 py-3 text-sm text-white placeholder-slate-500 outline-none transition"
+                            >
+                            <div class="absolute inset-y-0 right-2 flex items-center gap-1">
+                                <button type="button" id="pasteBtn" class="text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1.5 rounded-lg transition">
+                                    Paste
+                                </button>
+                                <button type="button" id="clearBtn" class="text-slate-500 hover:text-slate-300 p-1.5 rounded-lg transition" title="Clear input">
+                                    <i data-lucide="x" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Optional Passcode & Submit Button -->
+                    <div class="lg:col-span-4 flex flex-col sm:flex-row gap-2.5 items-end">
+                        <div class="w-full sm:w-32 shrink-0">
+                            <label for="sharePwd" class="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                                Passcode <span class="text-slate-600">(Opt)</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="sharePwd" 
+                                maxlength="8"
+                                placeholder="e.g. a4x9" 
+                                class="w-full bg-obsidian-950 border border-slate-700/90 focus:border-cyan-500 rounded-xl px-3 py-3 text-sm font-mono text-white placeholder-slate-600 outline-none transition"
+                            >
+                        </div>
+
+                        <button 
+                            type="submit" 
+                            id="extractBtn"
+                            class="w-full bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-slate-950 font-bold text-sm px-5 py-3 rounded-xl shadow-lg shadow-cyan-500/20 transition flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-60"
+                        >
+                            <span id="extractBtnText">Extract Links</span>
+                            <i id="extractBtnIcon" data-lucide="arrow-right" class="w-4 h-4 stroke-[2.5]"></i>
+                            <i id="extractSpinner" data-lucide="loader-2" class="hidden animate-spin w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Supported Mirror Domains -->
+                <div class="flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500">
+                    <span class="mr-1">Supported Domains:</span>
+                    <span class="px-2 py-0.5 rounded bg-obsidian-950 border border-slate-800 text-slate-400 font-mono">terabox.com</span>
+                    <span class="px-2 py-0.5 rounded bg-obsidian-950 border border-slate-800 text-slate-400 font-mono">1024terabox.com</span>
+                    <span class="px-2 py-0.5 rounded bg-obsidian-950 border border-slate-800 text-slate-400 font-mono">1024tera.com</span>
+                    <span class="px-2 py-0.5 rounded bg-obsidian-950 border border-slate-800 text-slate-400 font-mono">teraboxapp.com</span>
+                    <span class="px-2 py-0.5 rounded bg-obsidian-950 border border-slate-800 text-slate-400 font-mono">nephobox.com</span>
+                    <span class="px-2 py-0.5 rounded bg-obsidian-950 border border-slate-800 text-slate-400 font-mono">?surl=</span>
+                </div>
+            </form>
+
+            <!-- Live Connection Settings Panel (Persisted in localStorage) -->
+            <div class="mt-5 pt-5 border-t border-slate-800/80">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="sliders-horizontal" class="w-4 h-4 text-cyan-400"></i>
+                        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-200">Live Connection Settings</h2>
+                    </div>
+                    <span class="text-[11px] text-slate-500">Settings automatically persist in <code class="text-slate-400">localStorage</code></span>
+                </div>
+
+                <!-- 3 Connection Mode Selector Tabs -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 mb-4">
+                    <!-- Mode A -->
+                    <button type="button" onclick="setConnectionMode('cors_cookie')" id="btnMode_cors_cookie" class="mode-tab text-left p-3 rounded-xl border transition flex flex-col justify-between gap-1">
+                        <div class="flex items-center justify-between w-full">
+                            <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                                <i data-lucide="globe" class="w-3.5 h-3.5 text-cyan-400"></i>
+                                Mode A: CORS Relay + Cookie
+                            </span>
+                            <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-cyan-500/15 text-cyan-300">Static Live</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-snug">Direct fetch via CORS proxy prefix + your own <code class="text-slate-300">ndus</code> cookie.</p>
+                    </button>
+
+                    <!-- Mode B -->
+                    <button type="button" onclick="setConnectionMode('custom_worker')" id="btnMode_custom_worker" class="mode-tab text-left p-3 rounded-xl border transition flex flex-col justify-between gap-1">
+                        <div class="flex items-center justify-between w-full">
+                            <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                                <i data-lucide="server" class="w-3.5 h-3.5 text-indigo-400"></i>
+                                Mode B: Custom Worker API
+                            </span>
+                            <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-indigo-500/15 text-indigo-300">POST JSON</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-snug">Sends <code class="text-slate-300">POST { url, ndus }</code> to your Cloudflare Worker or FastAPI.</p>
+                    </button>
+
+                    <!-- Mode C -->
+                    <button type="button" onclick="setConnectionMode('demo')" id="btnMode_demo" class="mode-tab text-left p-3 rounded-xl border transition flex flex-col justify-between gap-1">
+                        <div class="flex items-center justify-between w-full">
+                            <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                                <i data-lucide="play-circle" class="w-3.5 h-3.5 text-amber-400"></i>
+                                Mode C: Demo / Offline Preview
+                            </span>
+                            <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-300">Instant</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-snug">Preloaded 4K video &amp; multi-file folder samples for zero-config testing.</p>
+                    </button>
+                </div>
+
+                <!-- Mode A Panel: CORS Relay + Cookie -->
+                <div id="panelMode_cors_cookie" class="hidden p-4 rounded-xl bg-obsidian-950/90 border border-slate-800 space-y-3.5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label for="corsProxyInput" class="text-xs font-medium text-slate-300">CORS Proxy Prefix URL</label>
+                                <button type="button" onclick="document.getElementById('corsProxyInput').value='https://corsproxy.io/?'; saveSettings();" class="text-[11px] text-cyan-400 hover:underline">Use corsproxy.io</button>
+                            </div>
+                            <input 
+                                type="text" 
+                                id="corsProxyInput" 
+                                placeholder="https://corsproxy.io/? or https://your-relay.workers.dev/?"
+                                class="w-full bg-obsidian-900 border border-slate-700 focus:border-cyan-500 rounded-lg px-3 py-2 text-xs font-mono text-cyan-300 placeholder-slate-600 outline-none"
+                            >
+                            <p class="text-[10px] text-slate-500 mt-1">Target Terabox API URL will be encoded and appended to this prefix.</p>
+                        </div>
+
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label for="ndusCookieInput" class="text-xs font-medium text-slate-300">Terabox <code class="text-cyan-400">ndus</code> Session Cookie</label>
+                                <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+                                    <i data-lucide="lock" class="w-2.5 h-2.5"></i> Stored Locally Only
+                                </span>
+                            </div>
+                            <div class="flex gap-2">
+                                <input 
+                                    type="password" 
+                                    id="ndusCookieInput" 
+                                    placeholder="Paste your ndus cookie value here..."
+                                    class="w-full bg-obsidian-900 border border-slate-700 focus:border-cyan-500 rounded-lg px-3 py-2 text-xs font-mono text-slate-200 placeholder-slate-600 outline-none"
+                                >
+                                <button type="button" id="clearCookieBtn" class="px-3 py-2 rounded-lg bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 text-xs font-semibold shrink-0 transition" title="Wipe cookie from localStorage">
+                                    Clear Cookie
+                                </button>
+                            </div>
+                            <p class="text-[10px] text-slate-500 mt-1">Browser security forbids raw <code class="text-slate-400">Cookie</code> headers on third-party public CORS proxies; use a custom Cloudflare Worker relay if your proxy strips cookies.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mode B Panel: Custom Worker API -->
+                <div id="panelMode_custom_worker" class="hidden p-4 rounded-xl bg-obsidian-950/90 border border-slate-800 space-y-3.5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        <div>
+                            <label for="workerEndpointInput" class="block text-xs font-medium text-slate-300 mb-1">
+                                Cloudflare Worker / FastAPI Endpoint URL
+                            </label>
+                            <input 
+                                type="url" 
+                                id="workerEndpointInput" 
+                                placeholder="https://terapulse-worker.yourname.workers.dev/api/extract"
+                                class="w-full bg-obsidian-900 border border-slate-700 focus:border-indigo-500 rounded-lg px-3 py-2 text-xs font-mono text-indigo-300 placeholder-slate-600 outline-none"
+                            >
+                            <p class="text-[10px] text-slate-500 mt-1">Receives <code class="text-slate-300">POST</code> JSON body: <code class="text-indigo-300">{"url": "...", "ndus": "...", "pwd": "..."}</code></p>
+                        </div>
+
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label for="workerNdusInput" class="text-xs font-medium text-slate-300">Optional <code class="text-indigo-400">ndus</code> Cookie Payload</label>
+                                <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+                                    <i data-lucide="lock" class="w-2.5 h-2.5"></i> LocalStorage Only
+                                </span>
+                            </div>
+                            <div class="flex gap-2">
+                                <input 
+                                    type="password" 
+                                    id="workerNdusInput" 
+                                    placeholder="Leave blank if stored in Worker ENV"
+                                    class="w-full bg-obsidian-900 border border-slate-700 focus:border-indigo-500 rounded-lg px-3 py-2 text-xs font-mono text-slate-200 placeholder-slate-600 outline-none"
+                                >
+                                <button type="button" onclick="clearSavedCookie()" class="px-3 py-2 rounded-lg bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 text-xs font-semibold shrink-0 transition">
+                                    Clear Cookie
+                                </button>
+                            </div>
+                            <p class="text-[10px] text-slate-500 mt-1">Need a free worker? Click <strong>Deploy to GitHub Pages</strong> at the top for copy-ready Worker code.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mode C Panel: Demo / Offline Preview Mode -->
+                <div id="panelMode_demo" class="p-4 rounded-xl bg-amber-500/5 border border-amber-500/25 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-start gap-2.5 text-xs text-amber-200/90">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-amber-400 shrink-0 mt-0.5"></i>
+                        <div>
+                            <p class="font-semibold text-amber-200">Offline Demo Preview Active</p>
+                            <p class="text-[11px] text-amber-200/75">Choose a sample dataset below and click <strong>Extract Links</strong> to preview single 4K files or multi-file folder batch extraction.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <label for="demoPresetSelect" class="text-[11px] font-medium text-amber-300">Sample:</label>
+                        <select id="demoPresetSelect" class="bg-obsidian-950 border border-amber-500/35 rounded-lg px-3 py-1.5 text-xs font-medium text-white outline-none cursor-pointer">
+                            <option value="single_4k">Single 4K UHD Movie (14.62 GB MKV)</option>
+                            <option value="folder_multi">Shared Folder (4 Full-Quality Files)</option>
+                            <option value="raw_zip">Lossless RAW Asset Pack (8.78 GB ZIP)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Error Alert Banner -->
+        <div id="errorBox" class="hidden mb-6 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/35 text-rose-200 flex items-start gap-3">
+            <i data-lucide="alert-triangle" class="w-5 h-5 text-rose-400 shrink-0 mt-0.5"></i>
+            <div class="text-xs sm:text-sm space-y-1">
+                <h4 class="font-bold text-rose-300" id="errorTitle">Extraction Failed</h4>
+                <p id="errorMessage" class="text-rose-200/90 leading-relaxed"></p>
+                <p id="errorHint" class="text-[11px] text-rose-300/75 font-mono pt-1"></p>
+            </div>
+        </div>
+
+        <!-- Results Container (Supports Single File OR Multi-File Shared Folder) -->
+        <div id="resultsWrapper" class="hidden space-y-4">
+            
+            <!-- Batch Toolbar (Shown when 2 or more files are extracted from a folder) -->
+            <div id="batchToolbar" class="hidden glass-panel rounded-2xl p-4 border border-indigo-500/35 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-500/20 border border-indigo-500/35 flex items-center justify-center text-indigo-400">
+                        <i data-lucide="folder-open" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 id="batchTitle" class="text-sm font-bold text-white">Shared Folder Detected (4 Files)</h3>
+                        <p id="batchSubtitle" class="text-xs text-slate-400">Total Size: 5.81 GB &bull; All files extracted at original full quality</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <button type="button" id="copyAllLinksBtn" class="bg-indigo-500 hover:bg-indigo-400 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl shadow-lg shadow-indigo-500/20 transition flex items-center gap-1.5 active:scale-95">
+                        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                        <span>Copy All Links</span>
+                    </button>
+                    <button type="button" id="copyAllAria2Btn" class="bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-slate-700 font-semibold text-xs px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5 active:scale-95">
+                        <i data-lucide="terminal" class="w-3.5 h-3.5"></i>
+                        <span>Copy Batch aria2c</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- File Cards List -->
+            <div id="fileCardsList" class="space-y-4"></div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-slate-800/70 py-5 text-center text-xs text-slate-500">
+        <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p><strong>TeraPulse</strong> &mdash; Open-Source Static Client for GitHub Pages.</p>
+            <p class="text-slate-600">Your <code class="text-slate-500">ndus</code> cookie never leaves your browser except to your configured relay/worker.</p>
+        </div>
+    </footer>
+
+    <!-- Deploy to GitHub Pages Help Modal -->
+    <div id="githubModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-obsidian-950/85 backdrop-blur-md">
+        <div class="bg-obsidian-900 border border-slate-700/90 rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+            
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-obsidian-900">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                        <i data-lucide="github" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-base">Deploy TeraPulse to GitHub Pages</h3>
+                        <p class="text-xs text-slate-400">Host your own free static extractor in under 2 minutes</p>
+                    </div>
+                </div>
+                <button type="button" onclick="toggleModal('githubModal', false)" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="p-6 overflow-y-auto space-y-6 text-xs sm:text-sm text-slate-300 leading-relaxed">
+                
+                <!-- Step-by-Step GitHub Pages Guide -->
+                <div class="space-y-2.5">
+                    <h4 class="font-bold text-white flex items-center gap-2 text-sm">
+                        <span class="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-300 text-xs font-bold flex items-center justify-center border border-cyan-500/30">1</span>
+                        Publish <code class="text-cyan-300">index.html</code> on GitHub Pages
+                    </h4>
+                    <ol class="list-decimal list-inside space-y-1.5 text-xs text-slate-400 pl-2">
+                        <li>Create a new public or private repository on GitHub (e.g., <code class="text-slate-200">terapulse</code>).</li>
+                        <li>Upload this single file as <code class="text-cyan-300 font-mono">index.html</code> (and optionally the <code class="text-cyan-300 font-mono">README.md</code> below) to the <code class="text-slate-200">main</code> branch.</li>
+                        <li>Go to your repository <strong>Settings &rarr; Pages</strong>.</li>
+                        <li>Under <strong>Build and deployment &rarr; Source</strong>, select <strong>Deploy from a branch</strong>.</li>
+                        <li>Select <strong>Branch: <code class="text-emerald-400">main</code></strong> and folder <strong><code class="text-emerald-400">/ (root)</code></strong>, then click <strong>Save</strong>.</li>
+                        <li>Wait ~60 seconds and open <code class="text-cyan-300">https://&lt;your-username&gt;.github.io/terapulse/</code>.</li>
+                    </ol>
+                </div>
+
+                <!-- Copyable README.md -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-bold text-white flex items-center gap-2 text-sm">
+                            <span class="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-300 text-xs font-bold flex items-center justify-center border border-cyan-500/30">2</span>
+                            Repository <code class="text-cyan-300">README.md</code> Template
+                        </h4>
+                        <button type="button" onclick="copyElementText('readmeTemplate', 'README.md copied to clipboard!')" class="text-xs font-semibold bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/35 px-3 py-1.5 rounded-lg transition flex items-center gap-1.5">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                            <span>Copy README.md</span>
+                        </button>
+                    </div>
+                    <pre id="readmeTemplate" class="p-3.5 rounded-xl bg-obsidian-950 border border-slate-800 text-[11px] font-mono text-slate-300 overflow-x-auto leading-relaxed"># ⚡ TeraPulse — Full-Quality Terabox Direct Link Extractor
+
+A zero-dependency, single-file static web client (`index.html`) designed for **GitHub Pages** that extracts untouched, full-quality Terabox `dlink` CDN URLs for multi-threaded download managers (**1DM**, **IDM**, **FDM**, and **aria2c**).
+
+## ✨ Features
+- **3 Connection Modes**:
+  1. **CORS Relay + Cookie**: Fetch metadata directly from Terabox endpoints using a CORS proxy prefix and your local `ndus` session cookie.
+  2. **Custom Worker API**: Connect to your own private Cloudflare Worker or FastAPI backend via `POST { url, ndus }`.
+  3. **Demo / Offline Preview Mode**: Test single 4K files and multi-file folders immediately without credentials.
+- **Original Source Quality**: Preserves original video resolution, bitrate, and multi-audio tracks without web-player transcoding.
+- **Multi-File Folder Support**: Lists all files in shared folders with individual action buttons plus **Copy All Links**.
+- **16-Thread `aria2c` Command Generator**: Generates ready-to-paste terminal commands with required `User-Agent` and `Referer` headers.
+
+## 🚀 Deploy to GitHub Pages
+1. Fork or upload `index.html` to a GitHub repository.
+2. Navigate to **Settings → Pages**.
+3. Set **Source** to `Deploy from a branch`, choose `main` and `/ (root)`, then click **Save**.
+4. Open your live GitHub Pages URL and configure your connection mode under **Live Connection Settings**.</pre>
+                </div>
+
+                <!-- Optional Private Cloudflare Worker Snippet -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-bold text-white flex items-center gap-2 text-sm">
+                            <span class="w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold flex items-center justify-center border border-indigo-500/30">3</span>
+                            Optional Free Cloudflare Worker (For Mode B)
+                        </h4>
+                        <button type="button" onclick="copyElementText('workerTemplate', 'Cloudflare Worker script copied!')" class="text-xs font-semibold bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-300 border border-indigo-500/35 px-3 py-1.5 rounded-lg transition flex items-center gap-1.5">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                            <span>Copy Worker JS</span>
+                        </button>
+                    </div>
+                    <p class="text-xs text-slate-400">
+                        Because public CORS proxies strip sensitive <code class="text-slate-200">Cookie</code> headers, deploying this free Cloudflare Worker gives your GitHub Pages site reliable live extraction with Mode B:
+                    </p>
+                    <pre id="workerTemplate" class="p-3.5 rounded-xl bg-obsidian-950 border border-slate-800 text-[11px] font-mono text-slate-300 overflow-x-auto leading-relaxed">export default {
+  async fetch(request, env) {
+    const cors = {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+      "Content-Type": "application/json"
+    };
+    if (request.method === "OPTIONS") return new Response(null, { headers: cors });
+
+    let shareUrl = "", ndus = env.TERABOX_NDUS || "", pwd = "";
+    if (request.method === "POST") {
+      const body = await request.json().catch(() => ({}));
+      shareUrl = body.url || "";
+      if (body.ndus) ndus = body.ndus;
+      pwd = body.pwd || "";
+    } else {
+      const { searchParams } = new URL(request.url);
+      shareUrl = searchParams.get("url") || "";
+    }
+
+    const match = shareUrl.match(/\/s\/([a-zA-Z0-9_-]+)/) || shareUrl.match(/surl=([a-zA-Z0-9_-]+)/);
+    const shorturl = match ? match[1].replace(/^1/, "") : "";
+    if (!shorturl) return new Response(JSON.stringify({ error: "Invalid Terabox share link" }), { status: 400, headers: cors });
+
+    const headers = {
+      "Cookie": `ndus=${ndus};`,
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      "Referer": "https://www.terabox.com/"
+    };
+
+    const infoRes = await fetch(`https://www.terabox.com/api/shorturlinfo?app_id=250528&shorturl=${shorturl}&root=1&pwd=${pwd}`, { headers });
+    const data = await infoRes.json();
+    if (data.errno !== 0 || !data.list?.length) {
+      return new Response(JSON.stringify({ error: `Terabox API errno ${data.errno} (Check ndus cookie or share link)` }), { status: 400, headers: cors });
+    }
+
+    const files = data.list.map(f => ({
+      fs_id: f.fs_id,
+      server_filename: f.server_filename,
+      size: f.size,
+      dlink: f.dlink,
+      thumbs: f.thumbs || {}
+    }));
+    return new Response(JSON.stringify({ files }), { headers: cors });
+  }
+};</pre>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-3.5 border-t border-slate-800 bg-obsidian-900 flex justify-end">
+                <button type="button" onclick="toggleModal('githubModal', false)" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs px-5 py-2.5 rounded-xl transition">
+                    Close Guide
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // Storage Keys
+        const STORAGE_KEYS = {
+            MODE: 'terapulse_gh_mode',
+            CORS_PROXY: 'terapulse_gh_cors_proxy',
+            NDUS_COOKIE: 'terapulse_gh_ndus_cookie',
+            WORKER_URL: 'terapulse_gh_worker_url'
+        };
+
+        // DOM Elements
+        const extractForm = document.getElementById('extractForm');
+        const teraboxUrlInput = document.getElementById('teraboxUrl');
+        const sharePwdInput = document.getElementById('sharePwd');
+        const pasteBtn = document.getElementById('pasteBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const extractBtn = document.getElementById('extractBtn');
+        const extractBtnText = document.getElementById('extractBtnText');
+        const extractBtnIcon = document.getElementById('extractBtnIcon');
+        const extractSpinner = document.getElementById('extractSpinner');
+
+        const headerModeBadge = document.getElementById('headerModeBadge');
+        const headerModeText = document.getElementById('headerModeText');
+
+        const corsProxyInput = document.getElementById('corsProxyInput');
+        const ndusCookieInput = document.getElementById('ndusCookieInput');
+        const workerEndpointInput = document.getElementById('workerEndpointInput');
+        const workerNdusInput = document.getElementById('workerNdusInput');
+        const demoPresetSelect = document.getElementById('demoPresetSelect');
+        const clearCookieBtn = document.getElementById('clearCookieBtn');
+
+        const errorBox = document.getElementById('errorBox');
+        const errorTitle = document.getElementById('errorTitle');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorHint = document.getElementById('errorHint');
+
+        const resultsWrapper = document.getElementById('resultsWrapper');
+        const batchToolbar = document.getElementById('batchToolbar');
+        const batchTitle = document.getElementById('batchTitle');
+        const batchSubtitle = document.getElementById('batchSubtitle');
+        const fileCardsList = document.getElementById('fileCardsList');
+        const copyAllLinksBtn = document.getElementById('copyAllLinksBtn');
+        const copyAllAria2Btn = document.getElementById('copyAllAria2Btn');
+
+        // Application State
+        let currentMode = 'demo';
+        let extractedFiles = [];
+        let isDemoResults = true;
+
+        // Preloaded Demo Datasets for Mode C
+        const DEMO_DATASETS = {
+            single_4k: [
+                {
+                    fs_id: "4398046511104",
+                    server_filename: "Dune_Part_Two_2024_IMAX_2160p_UHD_BluRay_TrueHD_7.1_HEVC.mkv",
+                    size: 15698104320, // 14.62 GB
+                    dlink: "https://d-jp02-zen.terabox.com/file/9f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c?fid=4398046511104&time=1795204440&sign=FDTAXUGERQlBHSKf&vip=1",
+                    thumbs: { url3: "https://placehold.co/640x480/090D16/22d3ee?text=4K+UHD+IMAX+MKV" },
+                    qualityNote: "2160p 10-bit HEVC • 15.4 Mbps • TrueHD 7.1"
+                }
+            ],
+            folder_multi: [
+                {
+                    fs_id: "110022334401",
+                    server_filename: "01_Arcane_S02E01_1080p_NF_WEB-DL_DDP5.1_Atmos_H264.mkv",
+                    size: 1845493760, // 1.72 GB
+                    dlink: "https://d-sg01-zen.terabox.com/file/1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c01?fid=110022334401&time=1795204440&sign=EP01FULLQUALITY&vip=1",
+                    thumbs: { url3: "https://placehold.co/640x480/090D16/818cf8?text=EP01+1080p+Atmos" },
+                    qualityNote: "1080p WEB-DL • 9.8 Mbps • DDP 5.1 Atmos"
+                },
+                {
+                    fs_id: "110022334402",
+                    server_filename: "02_Arcane_S02E02_1080p_NF_WEB-DL_DDP5.1_Atmos_H264.mkv",
+                    size: 1929379840, // 1.80 GB
+                    dlink: "https://d-sg01-zen.terabox.com/file/1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c02?fid=110022334402&time=1795204440&sign=EP02FULLQUALITY&vip=1",
+                    thumbs: { url3: "https://placehold.co/640x480/090D16/22d3ee?text=EP02+1080p+Atmos" },
+                    qualityNote: "1080p WEB-DL • 10.2 Mbps • DDP 5.1 Atmos"
+                },
+                {
+                    fs_id: "110022334403",
+                    server_filename: "03_Arcane_S02E03_1080p_NF_WEB-DL_DDP5.1_Atmos_H264.mkv",
+                    size: 1761607680, // 1.64 GB
+                    dlink: "https://d-sg01-zen.terabox.com/file/1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c03?fid=110022334403&time=1795204440&sign=EP03FULLQUALITY&vip=1",
+                    thumbs: { url3: "https://placehold.co/640x480/090D16/34d399?text=EP03+1080p+Atmos" },
+                    qualityNote: "1080p WEB-DL • 9.4 Mbps • DDP 5.1 Atmos"
+                },
+                {
+                    fs_id: "110022334404",
+                    server_filename: "Original_Score_Lossless_24bit_96kHz_FLAC.zip",
+                    size: 681574400, // 650.00 MB
+                    dlink: "https://d-sg02-zen.terabox.com/file/99887766554433221100aabbccddeeff?fid=110022334404&time=1795204440&sign=OSTLOSSLESSZIP&vip=1",
+                    thumbs: { url3: "https://placehold.co/640x480/090D16/f59e0b?text=24bit+FLAC+ZIP" },
+                    qualityNote: "Uncompressed Lossless Audio Archive"
+                }
+            ],
+            raw_zip: [
+                {
+                    fs_id: "9988112233445",
+                    server_filename: "Blender_4.3_Studio_Production_Assets_&_8K_EXR_Textures.zip",
+                    size: 9426698240, // 8.78 GB
+                    dlink: "https://d-us04-zen.terabox.com/file/7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f?fid=9988112233445&time=1795204440&sign=RAWZIPARCHIVE&vip=1",
+                    thumbs: { url3: "https://placehold.co/640x480/090D16/38bdf8?text=8.78+GB+RAW+ZIP" },
+                    qualityNote: "Original Bit-Exact Archive • Multi-Thread Ready"
+                }
+            ]
+        };
+
+        // Initialize Lucide Icons & Restore localStorage Settings
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+
+            const savedMode = localStorage.getItem(STORAGE_KEYS.MODE) || 'demo';
+            const savedCors = localStorage.getItem(STORAGE_KEYS.CORS_PROXY) || 'https://corsproxy.io/?';
+            const savedCookie = localStorage.getItem(STORAGE_KEYS.NDUS_COOKIE) || '';
+            const savedWorker = localStorage.getItem(STORAGE_KEYS.WORKER_URL) || '';
+
+            corsProxyInput.value = savedCors;
+            ndusCookieInput.value = savedCookie;
+            workerNdusInput.value = savedCookie;
+            workerEndpointInput.value = savedWorker;
+
+            setConnectionMode(savedMode, false);
+        });
+
+        // Persist Settings to localStorage
+        function saveSettings() {
+            localStorage.setItem(STORAGE_KEYS.MODE, currentMode);
+            localStorage.setItem(STORAGE_KEYS.CORS_PROXY, corsProxyInput.value.trim());
+            localStorage.setItem(STORAGE_KEYS.WORKER_URL, workerEndpointInput.value.trim());
+
+            const activeCookie = currentMode === 'custom_worker'
+                ? workerNdusInput.value.trim()
+                : ndusCookieInput.value.trim();
+
+            if (activeCookie) {
+                localStorage.setItem(STORAGE_KEYS.NDUS_COOKIE, activeCookie);
+                ndusCookieInput.value = activeCookie;
+                workerNdusInput.value = activeCookie;
+            }
+        }
+
+        // Auto-save inputs on change
+        [corsProxyInput, ndusCookieInput, workerEndpointInput, workerNdusInput].forEach(el => {
+            el.addEventListener('input', saveSettings);
+        });
+
+        // Clear Cookie Helper
+        function clearSavedCookie() {
+            localStorage.removeItem(STORAGE_KEYS.NDUS_COOKIE);
+            ndusCookieInput.value = '';
+            workerNdusInput.value = '';
+            showToast('ndus session cookie wiped from localStorage.', 'warn');
+        }
+        clearCookieBtn.addEventListener('click', clearSavedCookie);
+
+        // Switch Connection Mode (A, B, or C)
+        window.setConnectionMode = (mode, persist = true) => {
+            currentMode = mode;
+            if (persist) saveSettings();
+
+            const modes = ['cors_cookie', 'custom_worker', 'demo'];
+            modes.forEach(m => {
+                const btn = document.getElementById(`btnMode_${m}`);
+                const panel = document.getElementById(`panelMode_${m}`);
+                if (m === mode) {
+                    btn.className = 'mode-tab text-left p-3 rounded-xl border transition flex flex-col justify-between gap-1 bg-cyan-500/10 border-cyan-500/60 shadow-sm';
+                    panel.classList.remove('hidden');
+                } else {
+                    btn.className = 'mode-tab text-left p-3 rounded-xl border transition flex flex-col justify-between gap-1 bg-obsidian-950/70 border-slate-800 hover:border-slate-700 opacity-80 hover:opacity-100';
+                    panel.classList.add('hidden');
+                }
+            });
+
+            // Update Header Status Pill
+            if (mode === 'cors_cookie') {
+                headerModeBadge.className = 'hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-obsidian-900 border border-cyan-500/30 text-xs font-medium text-cyan-300';
+                headerModeBadge.querySelector('span').className = 'w-2 h-2 rounded-full bg-cyan-400';
+                headerModeText.textContent = 'Mode A: CORS Relay + Cookie';
+            } else if (mode === 'custom_worker') {
+                headerModeBadge.className = 'hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-obsidian-900 border border-indigo-500/30 text-xs font-medium text-indigo-300';
+                headerModeBadge.querySelector('span').className = 'w-2 h-2 rounded-full bg-indigo-400';
+                headerModeText.textContent = 'Mode B: Custom Worker API';
+            } else {
+                headerModeBadge.className = 'hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-obsidian-900 border border-amber-500/30 text-xs font-medium text-amber-300';
+                headerModeBadge.querySelector('span').className = 'w-2 h-2 rounded-full bg-amber-400 animate-pulse';
+                headerModeText.textContent = 'Mode C: Demo Preview';
+            }
+        };
+
+        // Toast Notification Utility
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            const colors = type === 'success'
+                ? 'bg-obsidian-900 border-emerald-500/40 text-emerald-300'
+                : 'bg-obsidian-900 border-amber-500/40 text-amber-200';
+            toast.className = `pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-xl border shadow-2xl text-xs font-medium transition-all duration-300 translate-y-2 opacity-0 ${colors}`;
+            toast.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4 shrink-0"></i><span>${message}</span>`;
+            document.getElementById('toastContainer').appendChild(toast);
+            lucide.createIcons({ nodes: [toast] });
+
+            requestAnimationFrame(() => toast.classList.remove('translate-y-2', 'opacity-0'));
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Clipboard Copy Helper (Safe for GitHub Pages & iFrames)
+        function copyText(text, successMsg) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand('copy');
+                showToast(successMsg || 'Copied to clipboard!');
+            } catch {
+                showToast('Unable to auto-copy. Please copy manually.', 'warn');
+            }
+            document.body.removeChild(ta);
+        }
+
+        window.copyElementText = (elId, msg) => {
+            const text = document.getElementById(elId).innerText;
+            copyText(text, msg);
+        };
+
+        // Modal Toggle
+        window.toggleModal = (id, show) => {
+            const el = document.getElementById(id);
+            if (show) {
+                el.classList.remove('hidden');
+                el.classList.add('flex');
+            } else {
+                el.classList.add('hidden');
+                el.classList.remove('flex');
+            }
+        };
+
+        document.getElementById('githubModal').addEventListener('click', (e) => {
+            if (e.target.id === 'githubModal') toggleModal('githubModal', false);
+        });
+
+        // Paste & Clear Input Buttons
+        pasteBtn.addEventListener('click', async () => {
+            try {
+                const clip = await navigator.clipboard.readText();
+                if (clip) {
+                    teraboxUrlInput.value = clip.trim();
+                    showToast('Pasted link from clipboard');
+                }
+            } catch {
+                teraboxUrlInput.focus();
+                showToast('Press Ctrl+V / Paste in the URL box', 'warn');
+            }
+        });
+
+        clearBtn.addEventListener('click', () => {
+            teraboxUrlInput.value = '';
+            sharePwdInput.value = '';
+            errorBox.classList.add('hidden');
+            teraboxUrlInput.focus();
+        });
+
+        // Format Bytes to KB / MB / GB / TB
+        function formatFileSize(bytes) {
+            const num = Number(bytes);
+            if (!num || isNaN(num)) return 'Unknown Size';
+            const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+            let i = 0;
+            let val = num;
+            while (val >= 1024 && i < units.length - 1) {
+                val /= 1024;
+                i++;
+            }
+            return `${val.toFixed(2)} ${units[i]}`;
+        }
+
+        // Extract Terabox shorturl / surl slug
+        function parseTeraboxSlug(urlStr) {
+            try {
+                const parsed = new URL(urlStr);
+                const validDomains = [
+                    'terabox.com', '1024terabox.com', '1024tera.com', 'teraboxapp.com',
+                    'nephobox.com', 'mirrobox.com', 'momerybox.com', 'freeterabox.com',
+                    'terasharefile.com', '4funbox.com', 'tibibox.com'
+                ];
+                const isTerabox = validDomains.some(d => parsed.hostname === d || parsed.hostname.endsWith('.' + d));
+                if (!isTerabox) return null;
+
+                const surlParam = parsed.searchParams.get('surl');
+                if (surlParam) return surlParam.replace(/^1/, '');
+
+                const pathMatch = parsed.pathname.match(/\/s\/([a-zA-Z0-9_-]+)/);
+                if (pathMatch) return pathMatch[1].replace(/^1/, '');
+
+                return null;
+            } catch {
+                return null;
+            }
+        }
+
+        // Build exact aria2c 16-Thread Command
+        function buildAria2Command(dlink) {
+            return `aria2c -x 16 -s 16 -k 1M --header="User-Agent: Mozilla/5.0" --header="Referer: https://www.terabox.com/" "${dlink}"`;
+        }
+
+        // Render Extracted File Cards (Single or Multi-File Folder)
+        function renderFileCards(files, isDemo) {
+            extractedFiles = files;
+            isDemoResults = isDemo;
+            errorBox.classList.add('hidden');
+            resultsWrapper.classList.remove('hidden');
+
+            // Configure Multi-File Batch Toolbar
+            if (files.length > 1) {
+                const totalBytes = files.reduce((acc, f) => acc + (Number(f.size) || 0), 0);
+                batchToolbar.classList.remove('hidden');
+                batchTitle.textContent = `Shared Folder Detected (${files.length} Files)`;
+                batchSubtitle.textContent = `Combined Size: ${formatFileSize(totalBytes)} • Untouched original full-quality links`;
+            } else {
+                batchToolbar.classList.add('hidden');
+            }
+
+            fileCardsList.innerHTML = files.map((file, idx) => {
+                const filename = file.server_filename || file.filename || `Terabox_File_${idx + 1}`;
+                const ext = filename.includes('.') ? filename.split('.').pop().toUpperCase().slice(0, 6) : 'FILE';
+                const formattedSize = formatFileSize(file.size);
+                const dlink = file.dlink || '';
+                const thumbUrl = (file.thumbs && (file.thumbs.url3 || file.thumbs.url2 || file.thumbs.url1)) || file.thumb || `https://placehold.co/480x360/090D16/22d3ee?text=${encodeURIComponent(ext)}`;
+                const qualityNote = file.qualityNote || 'Original Bit-Exact Source File (Zero Re-encoding)';
+
+                return `
+                    <div class="glass-panel rounded-2xl p-5 border border-slate-700/80 shadow-xl transition hover:border-slate-600/90">
+                        <div class="flex flex-col md:flex-row gap-5">
+                            
+                            <!-- Thumbnail & File Type Badge -->
+                            <div class="relative w-full md:w-48 aspect-video md:aspect-[4/3] rounded-xl overflow-hidden bg-obsidian-950 border border-slate-800 shrink-0">
+                                <img 
+                                    src="${thumbUrl}" 
+                                    onerror="this.src='https://placehold.co/480x360/090D16/22d3ee?text=${encodeURIComponent(ext)}'" 
+                                    alt="${filename}" 
+                                    class="w-full h-full object-cover"
+                                >
+                                <span class="absolute top-2 left-2 bg-obsidian-950/90 backdrop-blur-md text-[10px] font-mono font-bold px-2 py-0.5 rounded text-cyan-300 border border-slate-700">
+                                    ${ext}
+                                </span>
+                                <span class="absolute bottom-2 right-2 bg-obsidian-950/90 text-[10px] font-mono font-semibold px-2 py-0.5 rounded text-slate-200 border border-slate-800">
+                                    ${formattedSize}
+                                </span>
+                            </div>
+
+                            <!-- Metadata & Download Controls -->
+                            <div class="flex-grow min-w-0 flex flex-col justify-between">
+                                <div>
+                                    <!-- Top Quality Indicators -->
+                                    <div class="flex flex-wrap items-center gap-2 mb-2">
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/35">
+                                            <i data-lucide="sparkles" class="w-3 h-3"></i>
+                                            ORIGINAL SOURCE QUALITY
+                                        </span>
+                                        <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-800/90 text-slate-300 border border-slate-700/70">
+                                            ${ext} &bull; ${formattedSize}
+                                        </span>
+                                        <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-obsidian-950 text-slate-400">
+                                            ${isDemo ? 'Demo Sample' : 'Live Extracted'}
+                                        </span>
+                                    </div>
+
+                                    <!-- File Name -->
+                                    <h3 class="text-sm sm:text-base font-bold text-white break-words leading-snug mb-1">
+                                        ${filename}
+                                    </h3>
+                                    <p class="text-xs text-slate-400 mb-3">${qualityNote}</p>
+
+                                    <!-- Direct CDN URL Field -->
+                                    <div class="flex items-center bg-obsidian-950 border border-slate-800 rounded-xl p-1.5 pl-3 mb-3.5">
+                                        <input 
+                                            type="text" 
+                                            readonly 
+                                            value="${dlink}" 
+                                            class="w-full bg-transparent text-xs font-mono text-cyan-300 outline-none select-all truncate"
+                                        >
+                                        <button type="button" onclick="copySingleLink(${idx})" class="ml-2 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-semibold text-slate-200 transition shrink-0">
+                                            Copy URL
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- 3 Required Action Buttons -->
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                                    <a 
+                                        href="${dlink}" 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        onclick="handleDirectDownloadClick(event)"
+                                        class="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold text-xs py-2.5 px-3.5 rounded-xl shadow-lg shadow-emerald-500/20 transition flex items-center justify-center gap-1.5 active:scale-[0.98]"
+                                    >
+                                        <i data-lucide="download" class="w-4 h-4 stroke-[2.4]"></i>
+                                        <span>Direct Download</span>
+                                    </a>
+
+                                    <button 
+                                        type="button" 
+                                        onclick="copySingleLink(${idx})"
+                                        class="bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/40 font-semibold text-xs py-2.5 px-3.5 rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[0.98]"
+                                    >
+                                        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                        <span>Copy Link (1DM / IDM)</span>
+                                    </button>
+
+                                    <button 
+                                        type="button" 
+                                        onclick="copySingleAria2(${idx})"
+                                        class="bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-300 border border-indigo-500/40 font-semibold text-xs py-2.5 px-3.5 rounded-xl transition flex items-center justify-center gap-1.5 active:scale-[0.98]"
+                                    >
+                                        <i data-lucide="terminal" class="w-3.5 h-3.5"></i>
+                                        <span>Copy aria2c (16 Threads)</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            lucide.createIcons({ nodes: [fileCardsList] });
+        }
+
+        // Individual & Batch Card Handlers
+        window.handleDirectDownloadClick = (e) => {
+            if (isDemoResults) {
+                e.preventDefault();
+                showToast('Demo Mode: Switch to Mode A or Mode B with live credentials to download real files.', 'warn');
+            }
+        };
+
+        window.copySingleLink = (idx) => {
+            if (extractedFiles[idx]?.dlink) {
+                copyText(extractedFiles[idx].dlink, 'Direct link copied! Paste into 1DM or IDM.');
+            }
+        };
+
+        window.copySingleAria2 = (idx) => {
+            if (extractedFiles[idx]?.dlink) {
+                copyText(buildAria2Command(extractedFiles[idx].dlink), '16-thread aria2c command copied!');
+            }
+        };
+
+        copyAllLinksBtn.addEventListener('click', () => {
+            const links = extractedFiles.map(f => f.dlink).filter(Boolean).join('\n');
+            if (links) copyText(links, `Copied all ${extractedFiles.length} full-quality links!`);
+        });
+
+        copyAllAria2Btn.addEventListener('click', () => {
+            const cmds = extractedFiles.map(f => buildAria2Command(f.dlink)).join('\n');
+            if (cmds) copyText(cmds, `Copied ${extractedFiles.length} aria2c commands!`);
+        });
+
+        // Detailed Error Display Helper
+        function showExtractionError(title, message, hint = '') {
+            resultsWrapper.classList.add('hidden');
+            errorBox.classList.remove('hidden');
+            errorTitle.textContent = title;
+            errorMessage.textContent = message;
+            errorHint.textContent = hint;
+            errorHint.classList.toggle('hidden', !hint);
+        }
+
+        // Loading State Toggle
+        function setLoadingState(loading) {
+            extractBtn.disabled = loading;
+            extractBtnText.textContent = loading ? 'Extracting...' : 'Extract Links';
+            extractBtnIcon.classList.toggle('hidden', loading);
+            extractSpinner.classList.toggle('hidden', !loading);
+        }
+
+        // Main Extraction Execution Handler
+        extractForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const rawUrl = teraboxUrlInput.value.trim();
+            const pwd = sharePwdInput.value.trim();
+            const shorturl = parseTeraboxSlug(rawUrl);
+
+            if (!shorturl) {
+                showExtractionError(
+                    'Invalid Terabox Share URL',
+                    'Could not find a valid share slug (/s/... or ?surl=...) from a supported Terabox mirror domain.',
+                    'Example: https://www.terabox.com/s/1xK9mP2vL8nQ4rT7wY'
+                );
+                return;
+            }
+
+            saveSettings();
+            setLoadingState(true);
+            errorBox.classList.add('hidden');
+
+            // ============================================================
+            // MODE C: Demo / Offline Preview Mode
+            // ============================================================
+            if (currentMode === 'demo') {
+                setTimeout(() => {
+                    const preset = demoPresetSelect.value;
+                    const sampleFiles = JSON.parse(JSON.stringify(DEMO_DATASETS[preset] || DEMO_DATASETS.single_4k));
+                    renderFileCards(sampleFiles, true);
+                    setLoadingState(false);
+                    showToast(`Loaded ${sampleFiles.length} full-quality demo file(s)`);
+                }, 550);
+                return;
+            }
+
+            // ============================================================
+            // MODE A: CORS Relay + Cookie (Static GitHub Pages)
+            // ============================================================
+            if (currentMode === 'cors_cookie') {
+                const proxyPrefix = corsProxyInput.value.trim();
+                const ndus = ndusCookieInput.value.trim();
+
+                if (!proxyPrefix) {
+                    setLoadingState(false);
+                    showExtractionError(
+                        'Missing CORS Proxy Prefix',
+                        'Please enter a CORS proxy prefix (e.g., https://corsproxy.io/? or your custom Cloudflare Worker relay) in Mode A settings.'
+                    );
+                    return;
+                }
+
+                try {
+                    // Query Terabox /api/shorturlinfo and fallback to /share/list
+                    const endpoints = [
+                        `https://www.terabox.com/api/shorturlinfo?app_id=250528&shorturl=${encodeURIComponent(shorturl)}&root=1&pwd=${encodeURIComponent(pwd)}`,
+                        `https://www.terabox.com/share/list?app_id=250528&shorturl=${encodeURIComponent(shorturl)}&root=1&pwd=${encodeURIComponent(pwd)}`
+                    ];
+
+                    let parsedData = null;
+                    let lastErr = null;
+
+                    for (const targetApi of endpoints) {
+                        const relayedUrl = `${proxyPrefix}${encodeURIComponent(targetApi)}`;
+                        const fetchHeaders = { 'Accept': 'application/json' };
+                        // Pass custom header if using a custom Cloudflare CORS relay that forwards X-Terabox-Cookie
+                        if (ndus) {
+                            fetchHeaders['X-Terabox-Cookie'] = `ndus=${ndus}`;
+                        }
+
+                        try {
+                            const response = await fetch(relayedUrl, {
+                                method: 'GET',
+                                headers: fetchHeaders
+                            });
+
+                            if (!response.ok) {
+                                throw new Error(`CORS Relay returned HTTP ${response.status}`);
+                            }
+
+                            const json = await response.json();
+                            if (json && json.errno === 0 && Array.isArray(json.list) && json.list.length > 0) {
+                                parsedData = json;
+                                break;
+                            } else if (json && typeof json.errno !== 'undefined') {
+                                throw new Error(`Terabox API error code (errno: ${json.errno}). Your ndus cookie may be missing/expired or the share link requires a passcode.`);
+                            }
+                        } catch (innerErr) {
+                            lastErr = innerErr;
+                        }
+                    }
+
+                    if (!parsedData) {
+                        throw lastErr || new Error('Empty or invalid response from Terabox API.');
+                    }
+
+                    const normalizedFiles = parsedData.list.map(item => ({
+                        fs_id: item.fs_id,
+                        server_filename: item.server_filename,
+                        size: item.size,
+                        dlink: item.dlink,
+                        thumbs: item.thumbs || {},
+                        qualityNote: item.dlink
+                            ? 'Original Bit-Exact Source File (Zero Re-encoding)'
+                            : 'Metadata fetched, but dlink was omitted (ndus cookie not forwarded by public CORS proxy)'
+                    }));
+
+                    if (!normalizedFiles[0].dlink) {
+                        throw new Error('Terabox returned file metadata without a direct download URL (dlink). Public CORS proxies strip browser Cookie headers—switch to Mode B with a free Cloudflare Worker to inject your ndus cookie.');
+                    }
+
+                    renderFileCards(normalizedFiles, false);
+                    showToast(`Extracted ${normalizedFiles.length} full-quality file(s)!`);
+                } catch (err) {
+                    const isNetworkCors = err.name === 'TypeError' || /Failed to fetch|NetworkError|CORS/i.test(err.message);
+                    showExtractionError(
+                        isNetworkCors ? 'CORS Relay Blocked or Unreachable' : 'Terabox Extraction Failed',
+                        isNetworkCors
+                            ? `Browser blocked the request or the CORS relay (${proxyPrefix}) is offline/rate-limited.`
+                            : err.message,
+                        'Tip: Public CORS proxies often block Terabox or strip Cookie headers. Click "Deploy to GitHub Pages" to copy the 30-line free Cloudflare Worker for Mode B.'
+                    );
+                } finally {
+                    setLoadingState(false);
+                }
+                return;
+            }
+
+            // ============================================================
+            // MODE B: Custom Worker API (POST { url, ndus })
+            // ============================================================
+            if (currentMode === 'custom_worker') {
+                const workerUrl = workerEndpointInput.value.trim();
+                const ndus = workerNdusInput.value.trim();
+
+                if (!workerUrl) {
+                    setLoadingState(false);
+                    showExtractionError(
+                        'Missing Custom Worker API URL',
+                        'Please enter your Cloudflare Worker or FastAPI endpoint URL in Mode B settings.'
+                    );
+                    return;
+                }
+
+                try {
+                    const response = await fetch(workerUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            url: rawUrl,
+                            ndus: ndus,
+                            pwd: pwd
+                        })
+                    });
+
+                    const json = await response.json().catch(() => ({}));
+                    if (!response.ok || json.error) {
+                        throw new Error(json.error || `Worker returned HTTP ${response.status}`);
+                    }
+
+                    const files = Array.isArray(json.files) && json.files.length > 0
+                        ? json.files
+                        : (json.dlink ? [json] : []);
+
+                    if (!files.length || !files[0].dlink) {
+                        throw new Error('Worker response did not include any valid dlink URLs. Verify your ndus cookie is valid and not expired.');
+                    }
+
+                    renderFileCards(files, false);
+                    showToast(`Extracted ${files.length} full-quality file(s) via Worker!`);
+                } catch (err) {
+                    const isCors = err.name === 'TypeError' || /Failed to fetch/i.test(err.message);
+                    showExtractionError(
+                        isCors ? 'Worker CORS or Network Error' : 'Worker Extraction Error',
+                        isCors
+                            ? `Could not connect to ${workerUrl}. Ensure your Worker returns "Access-Control-Allow-Origin: *" headers.`
+                            : err.message,
+                        'Verify your Worker URL is deployed and your Terabox ndus cookie has not expired.'
+                    );
+                } finally {
+                    setLoadingState(false);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
